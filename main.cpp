@@ -3,52 +3,58 @@
 
 #include <iostream>
 
-class A {
+void error_callback(int error, const char* description);
+void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
 
-};
+void close_window_callback(GLFWwindow* window)
+{
+    fprintf(stdout, "Windows is closed\n");
+}
 
 int main() {
-        GLFWwindow *window;
+		// Set an error callback
+		glfwSetErrorCallback(error_callback);
+		/* Initialize the library */
+		if (glfwInit() == 0) {
+			return -1;
+		}
 
-        /* Initialize the library */
-        if (glfwInit() == 0) {
-                return -1;
-        }
-        glewInit();
+		/* Create a windowed mode window and its OpenGL context */
+		GLFWwindow *window;
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
+		if (window == nullptr) {
+			glfwTerminate();
+			return -1;
+		}
 
-        /* Create a windowed mode window and its OpenGL context */
-        window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
-        if (window == nullptr) {
-                glfwTerminate();
-                return -1;
-        }
+		/* Make the window's context current */
+		glfwMakeContextCurrent(window);
 
-        /* Make the window's context current */
-        glfwMakeContextCurrent(window);
+		// Initialize GLEW
+		if (glewInit() != GLEW_OK) {
+			std::cerr << "GLEW is not ok" << '\n';
+			glfwTerminate();
+			return -1;
+		}
 
-        if (glewInit() != GLEW_OK) {
-                std::cout << "Goew is not ok" << '\n';
-        }
+		/* Loop until the user closes the window */
+		glfwSwapInterval(1);
+		glfwSetWindowCloseCallback(window, close_window_callback);
+		while (glfwWindowShouldClose(window) == 0) {
+			/* Render here */
+			glClear(GL_COLOR_BUFFER_BIT);
 
-        /* Loop until the user closes the window */
-        while (glfwWindowShouldClose(window) == 0) {
-                /* Render here */
-                glClear(GL_COLOR_BUFFER_BIT);
+			/* Swap front and back buffers */
+			glfwSwapBuffers(window);
 
-                glBegin(GL_TRIANGLES);
-                glColor3f(0.1f, 0.2f, 0.3f);
-                glVertex3f(0, 0, 0);
-                glVertex3f(1, 0, 0);
-                glVertex3f(0, 1, 0);
-                glEnd();
+			/* Poll for and process events */
+			glfwPollEvents();
+		}
 
-                /* Swap front and back buffers */
-                glfwSwapBuffers(window);
-
-                /* Poll for and process events */
-                glfwPollEvents();
-        }
-
-        glfwTerminate();
-        return 0;
+		glfwTerminate();
+		return 0;
 }

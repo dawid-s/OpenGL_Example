@@ -30,6 +30,8 @@ int main() {
 			glfwTerminate();
 			return -1;
 		}
+		glfwSwapInterval(1);
+		glfwSetWindowCloseCallback(window, close_window_callback);
 
 		/* Make the window's context current */
 		glfwMakeContextCurrent(window);
@@ -40,10 +42,12 @@ int main() {
 			glfwTerminate();
 			return -1;
 		}
-
+	
+	  GLuint* index_buffer;
+		glGenBuffers(2, index_buffer);
+		std::cout << index_buffer[1] << std::endl;
+		
 		/* Loop until the user closes the window */
-		glfwSwapInterval(1);
-		glfwSetWindowCloseCallback(window, close_window_callback);
 		while (glfwWindowShouldClose(window) == 0) {
 			/* Render here */
 			glClear(GL_COLOR_BUFFER_BIT);

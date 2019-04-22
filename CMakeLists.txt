@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 project(imgui-opengl-glfw-glew-cmake-demo)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VERBOSE_MAKEFILE 1)
 
@@ -27,4 +27,5 @@ target_link_libraries(
     ${GLFW_LIBRARIES}
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
+    -lstdc++fs
 )

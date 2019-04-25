@@ -83,18 +83,28 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
-	glfwSwapInterval(1);
+	// glfwSwapInterval(1);
 
-	float vertices[] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
-						0.0f,  0.0f,  0.5f, 0.0f};
+	// float vertices[] = {
+    // -0.5f, -0.5f, 0.0f,
+    //  0.5f, -0.5f, 0.0f,
+    //  0.0f,  0.5f, 0.0f
+	// };
+	float vertices[] = {
+     0.0f,  0.5f, // Vertex 1 (X, Y)
+     0.5f, -0.5f, // Vertex 2 (X, Y)
+    -0.5f, -0.5f  // Vertex 3 (X, Y)
+	};
+
+	GLuint vertex_array;
+	glGenVertexArrays(1, &vertex_array);
+	glBindVertexArray(vertex_array);
 
 	GLuint index_buffer;
 	glGenBuffers(1, &index_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, index_buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-						  (void *)0);
-	glEnableVertexAttribArray(0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float), vertices, GL_STATIC_DRAW);
+	std::cout << sizeof(vertices) << "\n";
 
 	GLuint shaderProgram;
 	shaderProgram = glCreateProgram();
@@ -103,14 +113,18 @@ int main()
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	compileShader(vertexShader, "/../vertex_shader.glsl");
 	glAttachShader(shaderProgram, vertexShader);
-	glBindAttribLocation(vertexShader, 0, "aPos");
 
 	GLuint fragmentShader;
-	vertexShader = glCreateShader(GL_FRAGMENT_SHADER);
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	compileShader(fragmentShader, "/../fragment_shader.glsl");
 	glAttachShader(shaderProgram, fragmentShader);
+	glBindFragDataLocation(shaderProgram, 0, "outColor");
 
 	glLinkProgram(shaderProgram);
+
+	// GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+	// // glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	// glEnableVertexAttribArray(posAttrib);
 
 	int success;
 	char infoLog[512];
@@ -130,6 +144,7 @@ int main()
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shaderProgram);
+		// glBindVertexArray(vertex_array);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
